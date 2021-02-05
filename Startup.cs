@@ -1,6 +1,5 @@
 ﻿using MassInmemoryTransport.DataAccess;
 using MassInmemoryTransport.Messages.Components;
-using MassInmemoryTransport.Messages.Contracts;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
 
 namespace MassInmemoryTransport
 {
@@ -39,11 +37,6 @@ namespace MassInmemoryTransport
             {
                 sbc.ReceiveEndpoint("items_queue", ep =>
                 {
-                    ep.Handler<ItemCreated>(context =>
-                    {
-                        return Console.Out.WriteLineAsync($"Instant Consumer, received: code is {context.Message.Code}, desc is {context.Message.Description}");
-                    });
-
                     ep.Consumer<ItemCreatedSalesConsumer>();
                     ep.Consumer<ItemCreatedPurchasingConsumer>();
                 });
@@ -54,7 +47,9 @@ namespace MassInmemoryTransport
                 config.AddBus(provider => inMemorybus);
             });
 
-            services.AddSingleton<IBus>(inMemorybus);
+            // instead of holding a reference and add it to services: services.AddSingleton<IBus>(inMemorybus);
+            // it can also be retrieved from IServiceProvider by type and then add it to services like this:
+            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
