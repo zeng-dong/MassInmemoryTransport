@@ -37,8 +37,6 @@ namespace MassInmemoryTransport
             {
                 // consumer types must be first added otherwise I get something like 'consumer type not found ' when I ep.ConfigureConsumer<SomeConsumer>
                 config.AddConsumersFromNamespaceContaining<ItemCreatedSalesConsumer>();
-                //config.AddConsumer<ItemCreatedSalesConsumer>();
-                //config.AddConsumer<ItemCreatedSalesDatabaseConsumer>();
                 config.UsingInMemory((context, cfg) =>
                 {
                     cfg.ReceiveEndpoint("item_definition_queue", ep =>

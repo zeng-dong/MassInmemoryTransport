@@ -87,6 +87,26 @@
         //    services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         //}
 
+        // 2.1
+        //private static void ConfigureMasstransit(IServiceCollection services)
+        //{
+        //    services.AddMassTransit(config =>
+        //    {
+        //        // consumer types must be first added otherwise I get something like 'consumer type not found ' when I ep.ConfigureConsumer<SomeConsumer>
+        //        config.AddConsumersFromNamespaceContaining<ItemCreatedSalesConsumer>();
+        //        config.UsingInMemory((context, cfg) =>
+        //        {
+        //            cfg.ReceiveEndpoint("item_definition_queue", ep =>
+        //            {
+        //                ep.ConfigureConsumer<ItemCreatedSalesDatabaseConsumer>(context);
+        //                ep.ConfigureConsumer<ItemCreatedSalesConsumer>(context);
+        //                ep.ConfigureConsumer<ItemCreatedPurchasingConsumer>(context);
+        //            });
+        //        });
+        //    });
+        //
+        //    services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+        //}
 
     }
 }
