@@ -33,22 +33,23 @@ namespace MassInmemoryTransport
 
         private static void ConfigureMasstransit(IServiceCollection services)
         {
-            var inMemorybus = Bus.Factory.CreateUsingInMemory(sbc =>
+            services.AddMassTransit(config =>
             {
-                sbc.ReceiveEndpoint("items_queue", ep =>
+                // consumer types must be first added otherwise I get something like 'consumer type not found ' when I ep.ConfigureConsumer<SomeConsumer>
+                config.AddConsumersFromNamespaceContaining<ItemCreatedSalesConsumer>();
+                //config.AddConsumer<ItemCreatedSalesConsumer>();
+                //config.AddConsumer<ItemCreatedSalesDatabaseConsumer>();
+                config.UsingInMemory((context, cfg) =>
                 {
-                    ep.Consumer<ItemCreatedSalesConsumer>();
-                    ep.Consumer<ItemCreatedPurchasingConsumer>();
+                    cfg.ReceiveEndpoint("item_definition_queue", ep =>
+                    {
+                        ep.ConfigureConsumer<ItemCreatedSalesDatabaseConsumer>(context);
+                        ep.ConfigureConsumer<ItemCreatedSalesConsumer>(context);
+                        ep.ConfigureConsumer<ItemCreatedPurchasingConsumer>(context);
+                    });
                 });
             });
 
-            services.AddMassTransit(config =>
-            {
-                config.AddBus(provider => inMemorybus);
-            });
-
-            // instead of holding a reference and add it to services: services.AddSingleton<IBus>(inMemorybus);
-            // it can also be retrieved from IServiceProvider by type and then add it to services like this:
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 

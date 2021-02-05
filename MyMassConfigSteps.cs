@@ -31,6 +31,28 @@
         //    services.AddSingleton<IBus>(inMemorybus);
         //}
 
+        // step 1.1
+        //private static void ConfigureMasstransit(IServiceCollection services)
+        //{
+        //    var inMemorybus = Bus.Factory.CreateUsingInMemory(sbc =>
+        //    {
+        //        sbc.ReceiveEndpoint("items_queue", ep =>
+        //        {
+        //            ep.Consumer<ItemCreatedSalesConsumer>();
+        //            ep.Consumer<ItemCreatedPurchasingConsumer>();
+        //        });
+        //    });
+        //
+        //    services.AddMassTransit(config =>
+        //    {
+        //        config.AddBus(provider => inMemorybus);
+        //    });
+        //
+        //    // instead of holding a reference and add it to services: services.AddSingleton<IBus>(inMemorybus);
+        //    // it can also be retrieved from IServiceProvider by type and then add it to services like this:
+        //    services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+        //}
+
 
         // step 2
         /// <summary>
